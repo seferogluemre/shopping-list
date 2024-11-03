@@ -1,5 +1,11 @@
 @use "./App.scss";
 @media screen and (max-width: 600px) {
+  .shopping-container {
+    margin: 15% 23%;
+  }
+  .shopping-container-two {
+    transform: translateY(3%);
+  }
   table {
     border: 0;
   }

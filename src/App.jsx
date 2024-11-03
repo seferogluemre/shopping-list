@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Alert } from "react-bootstrap";
 import styled from "styled-components";
 import { MdFileDownloadDone } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
+import { nanoid } from "nanoid";
 const FormSelect = styled.select`
   padding: 6px 10px;
   width: 170px;
@@ -121,10 +122,13 @@ function App() {
     }
     const formattedProductName = productName.toUpperCase();
     const newProduct = {
-      id: products.length + 1,
+      id: nanoid(7),
       name: formattedProductName,
-      shop: productShop,
-      category: productCategories,
+      shop: shops.find((shop) => shop.id === parseInt(productShop, 10)).name,
+      category: categories.find(
+        (kategori) => kategori.id === parseInt(productCategories, 10)
+      ).categoryName,
+      isBought: false,
     };
 
     setProducts([...products, newProduct]);
@@ -133,6 +137,23 @@ function App() {
     setProductCategories("");
     setProductName("");
     setError("");
+    setCartLength(products.length);
+  };
+
+  const handleIsBought = (id) => {
+    setProducts(
+      products.map((product) => {
+        if (product.id === id) {
+          return { ...product, isBought: !product.isBought };
+        }
+      })
+    );
+  };
+
+  console.log(products);
+
+  const handleRemoveItem = (id) => {
+    setProducts(products.filter((product) => product.id !== id));
   };
 
   return (
@@ -145,6 +166,7 @@ function App() {
             <Form className="d-flex flex-row justify-content-center column-gap-3">
               <FormControls
                 id="product-name"
+                placeholder="Ürün"
                 type="text"
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
@@ -157,11 +179,7 @@ function App() {
                   All Shops
                 </option>
                 {shops.map((item) => (
-                  <option
-                    className="option-item"
-                    value={item.name}
-                    key={item.id}
-                  >
+                  <option className="option-item" value={item.id} key={item.id}>
                     {item.name}
                   </option>
                 ))}
@@ -176,7 +194,7 @@ function App() {
                 {categories.map((kategori) => (
                   <option
                     className="option-item"
-                    value={kategori.categoryName}
+                    value={kategori.id}
                     key={kategori.id}
                   >
                     {kategori.categoryName}
@@ -209,21 +227,22 @@ function App() {
           <table>
             <thead>
               <tr className="card-title-head">
-                <th>Id</th>
                 <th>Name</th>
                 <th>Category</th>
                 <th>Shop</th>
+                <th>Id</th>
                 <th>Action</th>
                 <th>Delete</th>
               </tr>
             </thead>
             <tbody id="table-body">
               {products.map((product) => (
-                <tr key={product.id}>
-                  <td className="card-title">
-                    <span className="card-span"></span>
-                    {product.id}
-                  </td>
+                <tr
+                  key={product.id}
+                  style={{
+                    textDecoration: product.isBought ? "line-through" : "none",
+                  }}
+                >
                   <td className="card-title">
                     <span className="card-span"></span>
                     {product.name}
@@ -235,10 +254,20 @@ function App() {
                     <span className="card-span"></span> {product.shop}
                   </td>
                   <td className="card-title">
-                    <MdFileDownloadDone className="icon" />
+                    <span className="card-span w-25"></span>
+                    {product.id}
                   </td>
                   <td className="card-title">
-                    <MdDelete className="icon" />
+                    <MdFileDownloadDone
+                      className="icon"
+                      onClick={() => handleIsBought(product.id)}
+                    />
+                  </td>
+                  <td className="card-title">
+                    <MdDelete
+                      className="icon"
+                      onClick={() => handleRemoveItem(product.id)}
+                    />
                   </td>
                 </tr>
               ))}
