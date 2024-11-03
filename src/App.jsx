@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, Row, Col, Form, Alert, FormCheck } from "react-bootstrap";
+import { Container, Row, Col, Form, Alert } from "react-bootstrap";
 import styled from "styled-components";
 import { MdFileDownloadDone } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
@@ -101,8 +101,6 @@ function App() {
   const [productShop, setProductShop] = useState("");
   const [productCategories, setProductCategories] = useState("");
   const [filteredName, setFilteredName] = useState("");
-  const [filteredCategory, setFilteredCategory] = useState("all");
-  const [filteredShopId, setFilteredShopId] = useState("all");
   const [filteredStatus, setFilteredStatus] = useState("");
   const [error, setError] = useState("");
 
@@ -142,16 +140,28 @@ function App() {
     setError("");
   };
 
+  // Eger Diger ürünler true ise yani alışverişte alınmışsa bizim en son tıkladıgımız ürünü filtreleyip daha sonra find ile bulup onu if kontrolüne sokarak eger false ise onu tam tersine çevirip yani true'ya alarak satın almış oluyoruz yani sepet tamamlanmış oluyor
+
   const handleIsBought = (id) => {
-    console.log("Eklenen ürün numarası");
-    setProducts(
-      products.map((product) => {
+    setProducts((prevProducts) => {
+      const allOtherItemsBought = prevProducts
+        .filter((p) => p.id !== id)
+        .every((p) => p.isBought);
+
+      const currentItem = prevProducts.find((p) => p.id === id);
+
+      if (allOtherItemsBought && !currentItem.isBought) {
+        alert("Alışveriş Tamamlandı! 🎉");
+        confetti();
+      }
+
+      return prevProducts.map((product) => {
         if (product.id === id) {
           return { ...product, isBought: !product.isBought };
         }
         return product;
-      })
-    );
+      });
+    });
   };
 
   const handleRemoveItem = (id) => {
