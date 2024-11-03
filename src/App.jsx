@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, Row, Col, Form, Alert } from "react-bootstrap";
+import { Container, Row, Col, Form, Alert, FormCheck } from "react-bootstrap";
 import styled from "styled-components";
 import { MdFileDownloadDone } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
@@ -81,53 +81,30 @@ const AlerContainer = styled.div`
   align-items: center;
   left: 36%;
 `;
+const shops = ["Migros", "Teknosa", "Bim", "Şok", "CarrefourSa"];
 
-const shops = [
-  {
-    id: 1,
-    name: "Migros",
-  },
-  {
-    id: 2,
-    name: "Teknosa",
-  },
-  {
-    id: 3,
-    name: "Bim",
-  },
-  {
-    id: 4,
-    name: "Şok",
-  },
-  {
-    id: 5,
-    name: "CarrefourSa",
-  },
-];
-const categories = [
-  {
-    id: 1,
-    categoryName: "Elektronik",
-  },
-  {
-    id: 2,
-    categoryName: "Şarküteri",
-  },
-  {
-    id: 3,
-    categoryName: "Oyuncak",
-  },
-  {
-    id: 4,
-    categoryName: "Bakliyat",
-  },
-];
+const categories = ["Elektronik", "Şarküteri", "Oyuncak", "Bakliyat"];
+
+const shopsObj = shops.map((shop, index) => ({
+  id: index,
+  name: shop,
+}));
+
+const categoriesObj = categories.map((kategori, index) => ({
+  id: index,
+  name: kategori,
+}));
 
 function App() {
   const [products, setProducts] = useState([]);
   const [productName, setProductName] = useState("");
   const [productShop, setProductShop] = useState("");
   const [productCategories, setProductCategories] = useState("");
+  const [filteredName, setFilteredName] = useState("");
+  const [filteredShop, setFilteredShop] = useState("all");
+  const [filteredCategory, setFilteredCategory] = useState("all");
+  const [filteredShopId, setFilteredShopId] = useState("all");
+  const [filteredStatus, setFilteredStatus] = useState("");
   const [error, setError] = useState("");
 
   const addToShop = () => {
@@ -151,10 +128,10 @@ function App() {
     const newProduct = {
       id: nanoid(7),
       name: formattedProductName,
-      shop: shops.find((shop) => shop.id === parseInt(productShop, 10)).name,
-      category: categories.find(
+      shop: shopsObj.find((shop) => shop.id === parseInt(productShop, 10)).name,
+      category: categoriesObj.find(
         (kategori) => kategori.id === parseInt(productCategories, 10)
-      ).categoryName,
+      ).name,
       isBought: false,
     };
 
@@ -166,6 +143,22 @@ function App() {
     setError("");
   };
 
+  const filteredProducts = products.filter((product) => {
+    return (
+      (filteredShopId === "all" ||
+        product.shop === shopsObj[parseInt(filteredShopId, 10)].name) &&
+      (filteredCategory === "all" ||
+        product.category ===
+          categoriesObj[parseInt(filteredCategory, 10)].name) &&
+      (filteredStatus === "all" ||
+        (filteredStatus === "bought" ? product.isBought : !product.isBought)) &&
+      (filteredName === "" ||
+        product.name.toLowerCase().includes(filteredName.toLowerCase()))
+    );
+  });
+
+  console.log(filteredProducts);
+
   const handleIsBought = (id) => {
     setProducts(
       products.map((product) => {
@@ -176,8 +169,6 @@ function App() {
       })
     );
   };
-
-  console.log(products);
 
   const handleRemoveItem = (id) => {
     setProducts(products.filter((product) => product.id !== id));
@@ -206,7 +197,7 @@ function App() {
                 <option className="option-item  " defaultValue="All">
                   All Shops
                 </option>
-                {shops.map((item) => (
+                {shopsObj.map((item) => (
                   <option className="option-item" value={item.id} key={item.id}>
                     {item.name}
                   </option>
@@ -219,13 +210,13 @@ function App() {
                 <option className="option-item  " defaultValue="All">
                   All Categories
                 </option>
-                {categories.map((kategori) => (
+                {categoriesObj.map((kategori) => (
                   <option
                     className="option-item"
                     value={kategori.id}
                     key={kategori.id}
                   >
-                    {kategori.categoryName}
+                    {kategori.name}
                   </option>
                 ))}
               </FormSelect>
@@ -235,7 +226,51 @@ function App() {
             </Form>
           </Col>
         </Row>
+        <Container className="d-block">
+          <Row className="d-flex justify-content-center ">
+            <Col xl="8" lg="8" sm="12" md="8">
+              <Form className="filter-search-form">
+                <FormControls
+                  type="text"
+                  placeholder="Arama..."
+                  value={filteredName}
+                  onChange={(e) => setFilteredName(e.target.value)}
+                />
+                <Form.Check
+                  type="radio"
+                  className="radio"
+                  name="filter-radio"
+                  value="all"
+                  onChange={(e) => setFilteredStatus(e.target.value)}
+                  id="all-radio"
+                  label="Tümü"
+                  defaultChecked
+                />
+                <Form.Check
+                  type="radio"
+                  className="radio"
+                  name="filter-radio"
+                  value="bought"
+                  onChange={(e) => setFilteredStatus(e.target.value)}
+                  id="bought"
+                  label="Alındı"
+                />
+                <Form.Check
+                  type="radio"
+                  className="radio"
+                  name="filter-radio"
+                  value="not-bought"
+                  onChange={(e) => setFilteredStatus(e.target.value)}
+                  id="not-bought"
+                  label="Alınmadı"
+                />
+              </Form>
+            </Col>
+            <Col xl="8" lg="8" sm="12" md="8" className="my-1"></Col>
+          </Row>
+        </Container>
       </Container>
+
       {error && (
         <AlerContainer
           className={`text-center alert-container ${
@@ -247,8 +282,7 @@ function App() {
       )}
 
       <Container
-        className={`shopping-container-two mt-5 ${error ? "error-active" : ""}`}
-        id
+        className={`shopping-container-two m-0 ${error ? "error-active" : ""}`}
         content-table-container
       >
         <Row className="my-5">
@@ -264,7 +298,7 @@ function App() {
               </tr>
             </thead>
             <tbody id="table-body">
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <tr
                   key={product.id}
                   style={{

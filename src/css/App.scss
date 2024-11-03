@@ -19,6 +19,7 @@ body {
   padding: 10px 5%;
   display: flex;
   justify-content: center;
+  flex-direction: column;
   color: aliceblue;
   background: rgba(37, 37, 37, 0.5);
   height: 60%;
@@ -30,7 +31,7 @@ body {
   }
 }
 .shopping-container-two {
-  margin: 15% 20%;
+  margin: 5% 20%;
   background-color: red;
   height: 500px;
   border-radius: 15px;
@@ -130,5 +131,16 @@ body {
     top: 0;
     background-color: #f8f8f8;
     z-index: 1;
+  }
+}
+
+.filter-search-form {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  column-gap: 15px;
+
+  .radio {
+    font-size: 17px;
   }
 }

@@ -15,10 +15,9 @@ body {
   background-color: red;
   border-radius: 15px;
   width: 50%;
-  align-items: center;
+  display: flex !important  ;
+  flex-direction: column !important;
   padding: 10px 5%;
-  display: flex;
-  justify-content: center;
   color: aliceblue;
   background: rgba(37, 37, 37, 0.5);
   height: 60%;
@@ -150,4 +149,4 @@ body {
   .card-title-head {
     display: none;
   }
-}/*# sourceMappingURL=style.css.map */
+} /*# sourceMappingURL=style.css.map */
