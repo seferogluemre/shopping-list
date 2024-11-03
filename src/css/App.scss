@@ -2,11 +2,12 @@
 
 body {
   background: url("../images/bg.jpg");
-  background-size: 100%;
+  background-size: 105%;
   overflow: hidden;
   font-family: "Poppins", serif;
   font-weight: 500;
   font-style: normal;
+  background-repeat: no-repeat;
   font-size: 23px !important;
 }
 .shopping-container {
@@ -23,13 +24,59 @@ body {
   height: 60%;
   box-shadow: 0 0 35px rgb(39, 39, 39);
 
+  &.container-one {
+    margin-top: 13%;
+    margin-bottom: 5%;
+  }
+}
+.shopping-container-two {
+  margin: 15% 20%;
+  background-color: red;
+  height: 500px;
+  border-radius: 15px;
+  width: 50%;
+  align-items: center;
+  transform: translateY(-40%);
+  padding: 10px 5%;
+  display: flex;
+  justify-content: center;
+  color: aliceblue;
+  background: rgba(37, 37, 37, 0.5);
+  height: 60%;
+  box-shadow: 0 0 35px rgb(39, 39, 39);
+  overflow: auto;
+  max-height: 110vh;
+
+  &.error-active {
+    margin-top: 5%;
+  }
+
+  .icon {
+    font-size: 30px !important;
+    box-shadow: 0 1px 2px rgb(90, 90, 90);
+    background: transparent !important;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    &:hover {
+      transform: scale(1.11);
+      box-shadow: 0 0 4px gray;
+    }
+  }
+
   table {
-    border: 1px solid #ccc;
-    border-collapse: collapse;
+    border-radius: 15px !important;
+    border-collapse: collapse !important;
     margin: 0;
+    color: black;
     padding: 0;
+    box-shadow: 0 0 15px #2c7fbb;
     width: 100%;
     table-layout: fixed;
+
+    overflow: hidden !important;
+
+    height: 100%;
   }
 
   table caption {
@@ -40,18 +87,42 @@ body {
   table tr {
     background-color: #f8f8f8;
     border: 1px solid #ddd;
-    padding: 0.35em;
+    padding: 0.55em;
   }
 
   table th,
   table td {
     padding: 0.625em;
     text-align: center;
+    overflow: hidden;
   }
 
   table th {
     font-size: 0.85em;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+  }
+
+  tbody {
+    display: block;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    max-height: calc(60vh - 100px);
+  }
+
+  thead,
+  tbody tr {
+    display: table;
+    width: 100%;
+
+    table-layout: fixed;
+  }
+
+  thead {
+    position: sticky;
+    top: 0;
+    background-color: #f8f8f8;
+    z-index: 1;
   }
 }

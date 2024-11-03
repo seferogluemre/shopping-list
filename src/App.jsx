@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Container, Row, Col, Form } from "react-bootstrap";
+import { Container, Row, Col, Form, Alert } from "react-bootstrap";
 import styled from "styled-components";
-
+import { MdFileDownloadDone } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 const FormSelect = styled.select`
   padding: 6px 10px;
   width: 170px;
@@ -34,6 +35,23 @@ const FormControls = styled.input`
   font-size: 18px;
   outline: none;
   box-shadow: 0 0 8px #d4f6ff;
+`;
+
+const AlerContainer = styled.div`
+  width: 550px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 15px;
+  height: 100px;
+  padding: 5px;
+  box-shadow: 0 0 5px #ff4545;
+  color: aliceblue;
+  z-index: 3050 !important;
+  font-size: 24px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 36%;
 `;
 
 const shops = [
@@ -82,24 +100,51 @@ function App() {
   const [productName, setProductName] = useState("");
   const [productShop, setProductShop] = useState("");
   const [productCategories, setProductCategories] = useState("");
+  const [error, setError] = useState("");
 
   const addToShop = () => {
-    if (productName !== null) {
-      const formattedProductName = productName.toUpperCase();
-      setProducts([...products, formattedProductName]);
-      setProductName("");
+    if (productName.trim() == "") {
+      setError("Lütfen Ürün Adını giriniz");
+      return;
     }
-  };
+    if (productName.length < 3) {
+      setError("Ürün Adı En Az 3 karakterli olmalıdır");
+      return;
+    }
+    if (productShop == "") {
+      setError("Ürünü Almak İstediginiz Marketi seçiniz");
+      return;
+    }
+    if (productCategories == "") {
+      setError("Ürünün Kategorisini Seçiniz");
+      return;
+    }
+    const formattedProductName = productName.toUpperCase();
+    const newProduct = {
+      id: products.length + 1,
+      name: formattedProductName,
+      shop: productShop,
+      category: productCategories,
+    };
 
-  console.log(products);
+    setProducts([...products, newProduct]);
+    setProductShop("");
+    confetti();
+    setProductCategories("");
+    setProductName("");
+    setError("");
+  };
 
   return (
     <>
-      <Container className="shopping-container ">
+      <Container
+        className={`shopping-container ${error ? "container-one" : ""}`}
+      >
         <Row>
           <Col xl="8" lg="8" sm="12" md="8">
             <Form className="d-flex flex-row justify-content-center column-gap-3">
               <FormControls
+                id="product-name"
                 type="text"
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
@@ -112,7 +157,11 @@ function App() {
                   All Shops
                 </option>
                 {shops.map((item) => (
-                  <option className="option-item" value={item.id} key={item.id}>
+                  <option
+                    className="option-item"
+                    value={item.name}
+                    key={item.id}
+                  >
                     {item.name}
                   </option>
                 ))}
@@ -127,7 +176,7 @@ function App() {
                 {categories.map((kategori) => (
                   <option
                     className="option-item"
-                    value={kategori.id}
+                    value={kategori.categoryName}
                     key={kategori.id}
                   >
                     {kategori.categoryName}
@@ -140,8 +189,61 @@ function App() {
             </Form>
           </Col>
         </Row>
-        <Row className="text-center">
-          
+      </Container>
+      {error && (
+        <AlerContainer
+          className={`text-center alert-container ${
+            error ? "error-active" : "not-active"
+          }`}
+        >
+          <Alert>{error}</Alert>
+        </AlerContainer>
+      )}
+
+      <Container
+        className={`shopping-container-two mt-5 ${error ? "error-active" : ""}`}
+        id
+        content-table-container
+      >
+        <Row className="my-5">
+          <table>
+            <thead>
+              <tr className="card-title-head">
+                <th>Id</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Shop</th>
+                <th>Action</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              {products.map((product) => (
+                <tr key={product.id}>
+                  <td className="card-title">
+                    <span className="card-span"></span>
+                    {product.id}
+                  </td>
+                  <td className="card-title">
+                    <span className="card-span"></span>
+                    {product.name}
+                  </td>
+                  <td className="card-title">
+                    <span className="card-span"></span> {product.category}
+                  </td>
+                  <td className="card-title">
+                    <span className="card-span"></span> {product.shop}
+                  </td>
+                  <td className="card-title">
+                    <MdFileDownloadDone className="icon" />
+                  </td>
+                  <td className="card-title">
+                    <MdDelete className="icon" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </Row>
       </Container>
     </>
