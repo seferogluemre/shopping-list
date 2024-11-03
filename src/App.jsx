@@ -101,7 +101,6 @@ function App() {
   const [productShop, setProductShop] = useState("");
   const [productCategories, setProductCategories] = useState("");
   const [filteredName, setFilteredName] = useState("");
-  const [filteredShop, setFilteredShop] = useState("all");
   const [filteredCategory, setFilteredCategory] = useState("all");
   const [filteredShopId, setFilteredShopId] = useState("all");
   const [filteredStatus, setFilteredStatus] = useState("");
@@ -143,23 +142,8 @@ function App() {
     setError("");
   };
 
-  const filteredProducts = products.filter((product) => {
-    return (
-      (filteredShopId === "all" ||
-        product.shop === shopsObj[parseInt(filteredShopId, 10)].name) &&
-      (filteredCategory === "all" ||
-        product.category ===
-          categoriesObj[parseInt(filteredCategory, 10)].name) &&
-      (filteredStatus === "all" ||
-        (filteredStatus === "bought" ? product.isBought : !product.isBought)) &&
-      (filteredName === "" ||
-        product.name.toLowerCase().includes(filteredName.toLowerCase()))
-    );
-  });
-
-  console.log(filteredProducts);
-
   const handleIsBought = (id) => {
+    console.log("Eklenen ürün numarası");
     setProducts(
       products.map((product) => {
         if (product.id === id) {
@@ -172,6 +156,21 @@ function App() {
 
   const handleRemoveItem = (id) => {
     setProducts(products.filter((product) => product.id !== id));
+  };
+
+  const getFilteredProducts = () => {
+    return products.filter((product) => {
+      const nameMatch = product.name
+        .toLowerCase()
+        .includes(filteredName.toLowerCase());
+
+      if (filteredStatus === "bought") {
+        return nameMatch && product.isBought;
+      } else if (filteredStatus === "not-bought") {
+        return nameMatch && !product.isBought;
+      }
+      return nameMatch;
+    });
   };
 
   return (
@@ -298,7 +297,7 @@ function App() {
               </tr>
             </thead>
             <tbody id="table-body">
-              {filteredProducts.map((product) => (
+              {getFilteredProducts().map((product) => (
                 <tr
                   key={product.id}
                   style={{
