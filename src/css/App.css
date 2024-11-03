@@ -118,4 +118,24 @@ body {
   top: 0;
   background-color: #f8f8f8;
   z-index: 1;
+}
+
+.true-bought {
+  animation: bgAnimation 3s infinite !important;
+  transition: background-color 0.3s ease;
+}
+
+@keyframes bgAnimation {
+  0% {
+    background-color: #e4fce5 !important;
+    color: black !important;
+  }
+  50% {
+    background-color: #87b888 !important;
+    color: black !important;
+  }
+  100% {
+    background-color: #4e8b4f !important;
+    color: white !important;
+  }
 }/*# sourceMappingURL=App.css.map */

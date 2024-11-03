@@ -29,6 +29,33 @@ const Button = styled.button`
   border-radius: 5px;
 `;
 
+import { createGlobalStyle } from "styled-components";
+
+const GlobalStyle = createGlobalStyle`
+ @keyframes bgAnimation {
+  0% {
+    background-color: #c5dac5;
+    color: black;
+  }
+  25% {
+    background-color: #c5dac5; /* Hafif yeşil */
+    color: black;
+  }
+  50% {
+    background-color: #99b999; /* Hafif yeşil */
+    color: black;
+  }
+  75% {
+    background-color: rgba(0,85,65,0.8); /* Beyazımsı yeşil */
+    color: aliceblue !important;
+  }
+  100% {
+    background-color: rgba(8,100,85,0.8); /* Beyazımsı yeşil */
+    color: aliceblue !important;
+  }
+}
+`;
+
 const FormControls = styled.input`
   padding: 5px 13px;
   border-radius: 5px;
@@ -137,7 +164,6 @@ function App() {
     setProductCategories("");
     setProductName("");
     setError("");
-    setCartLength(products.length);
   };
 
   const handleIsBought = (id) => {
@@ -146,6 +172,7 @@ function App() {
         if (product.id === id) {
           return { ...product, isBought: !product.isBought };
         }
+        return product;
       })
     );
   };
@@ -158,6 +185,7 @@ function App() {
 
   return (
     <>
+      <GlobalStyle />
       <Container
         className={`shopping-container ${error ? "container-one" : ""}`}
       >
@@ -240,6 +268,9 @@ function App() {
                 <tr
                   key={product.id}
                   style={{
+                    animation: product.isBought
+                      ? "bgAnimation 3s infinite"
+                      : "none",
                     textDecoration: product.isBought ? "line-through" : "none",
                   }}
                 >
