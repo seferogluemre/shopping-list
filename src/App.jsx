@@ -106,11 +106,11 @@ function App() {
 
   const addToShop = () => {
     if (productName.trim() == "") {
-      setError("Lütfen Ürün Adını giriniz");
+      setError("Lütfen Ürün Adını Giriniz");
       return;
     }
     if (productName.length < 3) {
-      setError("Ürün Adı En Az 3 karakterli olmalıdır");
+      setError("Ürün Adı En Az 3 Karakterli Olmalıdır");
       return;
     }
     if (productShop == "") {
