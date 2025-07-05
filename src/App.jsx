@@ -121,6 +121,7 @@ function App() {
       setError("Ürünün Kategorisini Seçiniz");
       return;
     }
+    
     const formattedProductName = productName.toUpperCase();
     const newProduct = {
       id: nanoid(7),
